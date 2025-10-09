@@ -3,6 +3,7 @@ package com.marketplace.dto;
 import com.marketplace.model.User;
 
 public class LoginResponse {
+
     private String token;
     private User user;
 

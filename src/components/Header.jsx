@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -8,7 +8,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -18,15 +18,23 @@ const Header = () => {
           <Link to="/" className="logo">
             RealEstate
           </Link>
-          
+
           <ul className="nav-links">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/properties">Properties</Link></li>
-            
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/properties">Properties</Link>
+            </li>
+
             {user ? (
               <>
-                <li><Link to="/dashboard">Dashboard</Link></li>
-                <li><Link to="/add-property">Add Property</Link></li>
+                <li>
+                  <Link to="/dashboard">Dashboard</Link>
+                </li>
+                <li>
+                  <Link to="/add-property">Add Property</Link>
+                </li>
                 <li>
                   <button onClick={handleLogout} className="btn btn-outline">
                     Logout
@@ -35,8 +43,16 @@ const Header = () => {
               </>
             ) : (
               <>
-                <li><Link to="/login" className="btn btn-primary">Login</Link></li>
-                <li><Link to="/register" className="btn btn-outline">Register</Link></li>
+                <li>
+                  <Link to="/login" className="btn btn-primary">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className="btn btn-outline">
+                    Register
+                  </Link>
+                </li>
               </>
             )}
           </ul>

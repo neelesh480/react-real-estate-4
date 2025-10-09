@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import com.marketplace.dto.LoginRequest;
 import com.marketplace.dto.LoginResponse;
 import com.marketplace.dto.RegisterRequest;
@@ -59,46 +58,46 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest registerRequest) {
         try {
+            // Check for duplicate email
             if (userService.existsByEmail(registerRequest.getEmail())) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Email already exists");
             }
 
+            // Create and save user with encoded password
             User user = new User();
-            user.setFirstName(registerRequest.getFirstName());
-            user.setLastName(registerRequest.getLastName());
+            user.setName(registerRequest.getName());
             user.setEmail(registerRequest.getEmail());
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
             User savedUser = userService.saveUser(user);
 
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    registerRequest.getEmail(),
-                    registerRequest.getPassword()
-                )
-            );
+            // Generate JWT token for the new user
+            String token = tokenProvider.generateToken(savedUser);
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = tokenProvider.generateToken(userDetails);
-
+            // Build response with token and saved user info
             LoginResponse response = new LoginResponse();
             response.setToken(token);
             response.setUser(savedUser);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            e.printStackTrace();
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Registration failed: " + e.getMessage());
         }
     }
 
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(Authentication authentication) {
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(401).build();
         }
-        
+
         User user = userService.findByEmail(authentication.getName());
         return ResponseEntity.ok(user);
     }

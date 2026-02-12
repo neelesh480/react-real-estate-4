@@ -20,4 +20,11 @@ public class GeminiRequest {
     public void setContents(List<Content> contents) {
         this.contents = contents;
     }
+
+    public void addContent(Content content) {
+        if (this.contents == null) {
+            this.contents = new ArrayList<>();
+        }
+        this.contents.add(content);
+    }
 }

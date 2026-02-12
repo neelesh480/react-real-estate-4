@@ -10,6 +10,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AddProperty from './pages/AddProperty';
 import EditProperty from './pages/EditProperty';
+import InteriorDesign from './pages/InteriorDesign';
+import DocumentSummarizer from './pages/DocumentSummarizer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -25,7 +27,9 @@ function App() {
               <Route path="/properties/:id" element={<PropertyDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route 
+              <Route path="/interior-design" element={<InteriorDesign />} />
+              <Route path="/document-summarizer" element={<DocumentSummarizer />} />
+              <Route
                 path="/dashboard" 
                 element={
                   <ProtectedRoute>

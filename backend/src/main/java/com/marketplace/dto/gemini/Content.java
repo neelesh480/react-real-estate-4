@@ -20,4 +20,11 @@ public class Content {
     public void setParts(List<Part> parts) {
         this.parts = parts;
     }
+
+    public void addPart(Part part) {
+        if (this.parts == null) {
+            this.parts = new ArrayList<>();
+        }
+        this.parts.add(part);
+    }
 }

@@ -1,5 +1,7 @@
 package com.marketplace.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,9 +16,10 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
            "(:location IS NULL OR LOWER(p.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
            "(:maxPrice IS NULL OR p.price <= :maxPrice)")
-    List<Property> searchProperties(
+    Page<Property> searchProperties(
             @Param("location") String location,
             @Param("minPrice") Double minPrice,
-            @Param("maxPrice") Double maxPrice
+            @Param("maxPrice") Double maxPrice,
+            Pageable pageable
     );
 }

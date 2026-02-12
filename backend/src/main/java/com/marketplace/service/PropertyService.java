@@ -1,6 +1,8 @@
 package com.marketplace.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.marketplace.model.Property;
 import com.marketplace.repository.PropertyRepository;
@@ -12,8 +14,8 @@ public class PropertyService {
     @Autowired
     private PropertyRepository propertyRepository;
 
-    public List<Property> getAllProperties() {
-        return propertyRepository.findAll();
+    public Page<Property> getAllProperties(Pageable pageable) {
+        return propertyRepository.findAll(pageable);
     }
 
     public Property getPropertyById(Long id) {
@@ -28,8 +30,8 @@ public class PropertyService {
         propertyRepository.deleteById(id);
     }
 
-    public List<Property> searchProperties(String location, Double minPrice, Double maxPrice) {
-        return propertyRepository.searchProperties(location, minPrice, maxPrice);
+    public Page<Property> searchProperties(String location, Double minPrice, Double maxPrice, Pageable pageable) {
+        return propertyRepository.searchProperties(location, minPrice, maxPrice, pageable);
     }
 
     public List<Property> getPropertiesByUser(String email) {

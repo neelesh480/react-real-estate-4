@@ -4,21 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.marketplace</groupId>
-<<<<<<< HEAD
     <artifactId>AI-Integrated-Real_Estate</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>AI-Integrated-Real_Estate</name>
     <description>A marketplace for buying and selling properties with AI integration.</description>
-=======
-    <artifactId>real-estate-marketplace</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-
-    <name>Real Estate Marketplace</name>
-    <description>A marketplace for buying and selling properties.</description>
->>>>>>> 12ed0b36e15a3ab060ad3e64189c264c997de30d
 
     <parent>
         <groupId>org.springframework.boot</groupId>

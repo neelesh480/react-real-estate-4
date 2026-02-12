@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "properties")
+@Table(name = "properties", indexes = {
+    @Index(name = "idx_location", columnList = "location"),
+    @Index(name = "idx_price", columnList = "price")
+})
 public class Property {
 
     @Id

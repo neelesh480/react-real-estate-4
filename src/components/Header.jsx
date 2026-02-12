@@ -26,6 +26,12 @@ const Header = () => {
             <li>
               <Link to="/properties">Properties</Link>
             </li>
+            <li>
+              <Link to="/interior-design">AI Design</Link>
+            </li>
+            <li>
+              <Link to="/document-summarizer">AI Legal</Link>
+            </li>
 
             {user ? (
               <>

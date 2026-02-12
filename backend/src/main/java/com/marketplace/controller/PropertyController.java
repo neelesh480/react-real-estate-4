@@ -1,6 +1,8 @@
 package com.marketplace.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +24,8 @@ public class PropertyController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<Property>> getAllProperties() {
-        List<Property> properties = propertyService.getAllProperties();
+    public ResponseEntity<Page<Property>> getAllProperties(Pageable pageable) {
+        Page<Property> properties = propertyService.getAllProperties(pageable);
         return ResponseEntity.ok(properties);
     }
 
@@ -69,11 +71,12 @@ public class PropertyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Property>> searchProperties(
+    public ResponseEntity<Page<Property>> searchProperties(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice) {
-        List<Property> properties = propertyService.searchProperties(location, minPrice, maxPrice);
+            @RequestParam(required = false) Double maxPrice,
+            Pageable pageable) {
+        Page<Property> properties = propertyService.searchProperties(location, minPrice, maxPrice, pageable);
         return ResponseEntity.ok(properties);
     }
 

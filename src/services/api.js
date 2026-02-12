@@ -33,8 +33,10 @@ api.interceptors.response.use(
 
 // Property API
 export const propertyAPI = {
-  getProperties: async () => {
-    const response = await api.get("/properties");
+  getProperties: async (page = 0, size = 10) => {
+    const response = await api.get("/properties", {
+      params: { page, size }
+    });
     return response.data;
   },
 
@@ -63,9 +65,9 @@ export const propertyAPI = {
     return response.data;
   },
 
-  searchProperties: async (searchParams) => {
+  searchProperties: async (searchParams, page = 0, size = 10) => {
     const response = await api.get("/properties/search", {
-      params: searchParams,
+      params: { ...searchParams, page, size },
     });
     return response.data;
   },
@@ -88,5 +90,69 @@ export const authAPI = {
     return response.data;
   },
 };
+
+// AI API
+export const aiAPI = {
+  getChatResponse: async (question) => {
+    const response = await api.post('/ai/chat', { question });
+    return response.data;
+  },
+  generateDescription: async (details) => {
+    const response = await api.post('/ai/generate-description', { details });
+    return response.data;
+  },
+  searchProperties: async (query) => {
+    const response = await api.post('/ai/search', { query });
+    return response.data;
+  },
+  getNeighborhoodInsights: async (location) => {
+    const response = await api.post('/ai/neighborhood-insights', { location });
+    return response.data;
+  },
+  searchByImage: async (imageFile) => {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    const response = await api.post('/ai/search-by-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+  generateInteriorDesign: async (imageFile, style) => {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('style', style);
+    const response = await api.post('/ai/interior-design', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+  generateInvestmentAnalysis: async (details) => {
+    const response = await api.post('/ai/investment-analysis', { details });
+    return response.data;
+  },
+  generateOfferLetter: async (details, offerAmount, conditions) => {
+    const response = await api.post('/ai/generate-offer-letter', { details, offerAmount, conditions });
+    return response.data;
+  },
+  summarizeDocument: async (imageFile) => {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    const response = await api.post('/ai/summarize-document', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+  getLifestyleScore: async (amenityList) => {
+    const response = await api.post('/ai/lifestyle-score', { amenityList });
+    return response.data;
+  }
+};
+
 
 export default api;

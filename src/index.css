@@ -485,3 +485,43 @@ body {
   border-color: #2563eb;
   color: #2563eb;
 }
+
+/* AI Search Form */
+.ai-search-form {
+  display: flex;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.ai-search-input {
+  flex-grow: 1;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+.ai-search-input:focus {
+  outline: none;
+}
+
+.ai-search-button {
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ai-search-button:hover {
+  background-color: #1d4ed8;
+}
+
+.ai-search-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

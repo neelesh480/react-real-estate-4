@@ -4,6 +4,7 @@ import PropertyCard from "../components/PropertyCard";
 import SearchForm from "../components/SearchForm";
 import PropertyCarousel from "../components/PropertyCarousel";
 import { propertyAPI } from "../services/api";
+import AIChatbot from '../components/AIChatbot';
 
 import About from "../components/About";
 import Testimonial from "../components/Testimonial";
@@ -16,9 +17,12 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
-        const properties = await propertyAPI.getProperties();
+        const response = await propertyAPI.getProperties();
+        // Handle paginated response
+        const properties = response.content || response;
         setFeaturedProperties(properties.slice(0, 6));
       } catch (err) {
+        console.error("Error fetching properties:", err);
         setError("Failed to load featured properties");
       } finally {
         setLoading(false);
@@ -43,9 +47,9 @@ const Home = () => {
         <div className="container">
           <PropertyCarousel
             images={[
-              "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 1BHK
-              "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 2BHK
-              "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 3BHK
+              "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1", // 1BHK
+              "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1", // 2BHK
+              "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1", // 3BHK
             ]}
             altPrefix="Featured property"
           />
@@ -82,6 +86,8 @@ const Home = () => {
       <About />
 
       <Testimonial />
+
+      <AIChatbot />
     </div>
   );
 };

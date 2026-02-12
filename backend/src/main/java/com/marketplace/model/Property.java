@@ -1,5 +1,7 @@
 package com.marketplace.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,17 +24,23 @@ public class Property {
     @Column(nullable = false)
     private Double price;
 
-    private String image;
+    @Column(length = 2048) // Increased length for long URLs
+    private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
 
     // Constructors
     public Property() {}
 
-    public Property(String title, String description, String location, Double price, String image) {
+    public Property(String title, String description, String location, Double price, String imageUrl) {
         this.title = title;
         this.description = description;
         this.location = location;
         this.price = price;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -76,11 +84,19 @@ public class Property {
         this.price = price;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

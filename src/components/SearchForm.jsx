@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { indianLocations } from '../data/locations';
 
 const SearchForm = ({ onSearch }) => {
   const [searchParams, setSearchParams] = useState({
-    location: '',
+    state: '',
+    district: '',
     minPrice: '',
     maxPrice: '',
     propertyType: ''
@@ -10,13 +12,21 @@ const SearchForm = ({ onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchParams);
+    const searchData = {
+      ...searchParams,
+      location: searchParams.district ? `${searchParams.district}, ${searchParams.state}` : searchParams.state
+    };
+    onSearch(searchData);
   };
 
   const handleChange = (e) => {
-    setSearchParams({
-      ...searchParams,
-      [e.target.name]: e.target.value
+    const { name, value } = e.target;
+    setSearchParams(prev => {
+      const newState = { ...prev, [name]: value };
+      if (name === 'state') {
+        newState.district = ''; // Reset district when state changes
+      }
+      return newState;
     });
   };
 
@@ -25,15 +35,23 @@ const SearchForm = ({ onSearch }) => {
       <div className="container">
         <form onSubmit={handleSubmit} className="search-form">
           <div className="form-group">
-            <label className="form-label">Location</label>
-            <input
-              type="text"
-              name="location"
-              value={searchParams.location}
-              onChange={handleChange}
-              placeholder="Enter location"
-              className="form-input"
-            />
+            <label className="form-label">State</label>
+            <select name="state" value={searchParams.state} onChange={handleChange} className="form-input">
+              <option value="">All States</option>
+              {Object.keys(indianLocations).map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">District</label>
+            <select name="district" value={searchParams.district} onChange={handleChange} className="form-input" disabled={!searchParams.state}>
+              <option value="">All Districts</option>
+              {searchParams.state && indianLocations[searchParams.state].map(district => (
+                <option key={district} value={district}>{district}</option>
+              ))}
+            </select>
           </div>
           
           <div className="form-group">
@@ -71,6 +89,7 @@ const SearchForm = ({ onSearch }) => {
               <option value="">All Types</option>
               <option value="HOUSE">House</option>
               <option value="APARTMENT">Apartment</option>
+              <option value="FLAT">Flat</option>
               <option value="CONDO">Condo</option>
               <option value="TOWNHOUSE">Townhouse</option>
             </select>

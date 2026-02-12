@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "../components/PropertyCard";
 import SearchForm from "../components/SearchForm";
-import PropertyCarousel from "../components/PropertyCarousel"; // ✅ import carousel
+import PropertyCarousel from "../components/PropertyCarousel";
 import { propertyAPI } from "../services/api";
 
-import About from "../components/About"; // Import About
-import Testimonial from "../components/Testimonial"; // Import Testimonial
+import About from "../components/About";
+import Testimonial from "../components/Testimonial";
 
 const Home = () => {
   const [featuredProperties, setFeaturedProperties] = useState([]);
@@ -17,7 +17,6 @@ const Home = () => {
     const fetchFeaturedProperties = async () => {
       try {
         const properties = await propertyAPI.getProperties();
-        // Show only first 6 properties as featured
         setFeaturedProperties(properties.slice(0, 6));
       } catch (err) {
         setError("Failed to load featured properties");
@@ -40,24 +39,21 @@ const Home = () => {
 
   return (
     <div>
-      {/* ✅ Replace Hero Section with Carousel */}
       <section className="carousel-section" style={{ padding: "2rem 0" }}>
         <div className="container">
           <PropertyCarousel
             images={[
-              "/images/house1.jpg",
-              "/images/house2.jpg",
-              "/images/house3.jpg",
+              "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 1BHK
+              "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 2BHK
+              "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // 3BHK
             ]}
             altPrefix="Featured property"
           />
         </div>
       </section>
 
-      {/* Search Section */}
       <SearchForm onSearch={handleSearch} />
 
-      {/* Featured Properties */}
       <section style={{ padding: "2rem 0" }}>
         <div className="container">
           <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>

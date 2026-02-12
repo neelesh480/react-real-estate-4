@@ -28,7 +28,13 @@ const Register = () => {
     }
 
     try {
-      const { confirmPassword, ...registrationData } = userData;
+      // Combine firstName and lastName into 'name' for the backend
+      const registrationData = {
+        name: `${userData.firstName} ${userData.lastName}`.trim(),
+        email: userData.email,
+        password: userData.password
+      };
+
       await register(registrationData);
       navigate('/dashboard');
     } catch (err) {

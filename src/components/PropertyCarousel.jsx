@@ -1,92 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const PropertyCarousel = ({ images = [], altPrefix = "Property image" }) => {
+const PropertyCarousel = ({ images = [], altPrefix = "Property image", interval = 5000 }) => {
   const [current, setCurrent] = useState(0);
-
-  if (!images.length) {
-    return <div>No images available.</div>;
-  }
-
-  const goToPrev = () => {
-    setCurrent(current === 0 ? images.length - 1 : current - 1);
-  };
+  const [isFading, setIsFading] = useState(false);
 
   const goToNext = () => {
-    setCurrent(current === images.length - 1 ? 0 : current + 1);
+    setIsFading(true);
+    setTimeout(() => {
+      setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      setIsFading(false);
+    }, 500); // Match this with CSS transition duration
   };
 
+  const goToPrev = () => {
+    setIsFading(true);
+    setTimeout(() => {
+      setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+      setIsFading(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    if (images.length > 1) {
+      const autoPlay = setInterval(() => {
+        goToNext();
+      }, interval);
+      return () => clearInterval(autoPlay);
+    }
+  }, [images.length, interval]);
+
+  if (!images.length) {
+    return <div style={{ textAlign: 'center', padding: '2rem' }}>No images available.</div>;
+  }
+
   return (
-    <div
-      className="property-carousel"
-      style={{
-        position: "relative",
-        width: "100%",
-        maxWidth: 500,
-        margin: "auto",
-      }}>
-      <img
-        src={images[current]}
-        alt={`${altPrefix} ${current + 1}`}
-        style={{
-          width: "100%",
-          height: 300,
-          objectFit: "cover",
-          borderRadius: 8,
-        }}
-      />
+    <div className="property-carousel">
+      <div className="carousel-image-container">
+        <img
+          src={images[current]}
+          alt={`${altPrefix} ${current + 1}`}
+          className={`carousel-image ${isFading ? 'fade-out' : 'fade-in'}`}
+        />
+      </div>
 
       {images.length > 1 && (
         <>
-          <button
-            onClick={goToPrev}
-            style={{
-              position: "absolute",
-              left: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "#fff",
-              border: "none",
-              padding: "8px 12px",
-              borderRadius: "50%",
-              cursor: "pointer",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            }}
-            aria-label="Previous">
-            ‹
+          <button onClick={goToPrev} className="carousel-btn prev" aria-label="Previous">
+            &#10094;
           </button>
-          <button
-            onClick={goToNext}
-            style={{
-              position: "absolute",
-              right: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "#fff",
-              border: "none",
-              padding: "8px 12px",
-              borderRadius: "50%",
-              cursor: "pointer",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            }}
-            aria-label="Next">
-            ›
+          <button onClick={goToNext} className="carousel-btn next" aria-label="Next">
+            &#10095;
           </button>
         </>
       )}
 
-      <div style={{ textAlign: "center", marginTop: 8 }}>
+      <div className="carousel-indicators">
         {images.map((_, idx) => (
           <span
             key={idx}
-            style={{
-              display: "inline-block",
-              width: 8,
-              height: 8,
-              margin: "0 3px",
-              borderRadius: "50%",
-              background: idx === current ? "#4299e1" : "#cfd8dc",
-              cursor: "pointer",
-            }}
+            className={`indicator ${idx === current ? "active" : ""}`}
             onClick={() => setCurrent(idx)}
             aria-label={`Go to image ${idx + 1}`}
           />

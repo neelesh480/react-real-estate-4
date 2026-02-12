@@ -31,4 +31,8 @@ public class PropertyService {
     public List<Property> searchProperties(String location, Double minPrice, Double maxPrice) {
         return propertyRepository.searchProperties(location, minPrice, maxPrice);
     }
+
+    public List<Property> getPropertiesByUser(String email) {
+        return propertyRepository.findByUserEmail(email);
+    }
 }

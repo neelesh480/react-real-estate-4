@@ -3,6 +3,19 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { propertyAPI } from '../services/api';
 
+const getDefaultImage = (bedrooms) => {
+  switch (String(bedrooms)) {
+    case '1':
+      return "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=400";
+    case '2':
+      return "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=400";
+    case '3':
+      return "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=400";
+    default:
+      return "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400";
+  }
+};
+
 const Dashboard = () => {
   const { user } = useAuth();
   const [userProperties, setUserProperties] = useState([]);
@@ -36,9 +49,9 @@ const Dashboard = () => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -80,7 +93,7 @@ const Dashboard = () => {
           {userProperties.map(property => (
             <div key={property.id} className="card">
               <img 
-                src={property.imageUrl || 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400'} 
+                src={property.imageUrl || getDefaultImage(property.bedrooms)}
                 alt={property.title}
                 className="property-image"
               />
@@ -99,6 +112,13 @@ const Dashboard = () => {
                     style={{ flex: 1 }}
                   >
                     View
+                  </Link>
+                  <Link
+                    to={`/edit-property/${property.id}`}
+                    className="btn btn-outline"
+                    style={{ flex: 1 }}
+                  >
+                    Edit
                   </Link>
                   <button 
                     onClick={() => handleDelete(property.id)}

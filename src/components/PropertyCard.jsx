@@ -1,11 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const getDefaultImage = (bedrooms) => {
+  switch (String(bedrooms)) {
+    case '1':
+      return "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=400";
+    case '2':
+      return "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=400";
+    case '3':
+      return "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=400";
+    default:
+      return "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400";
+  }
+};
+
 const PropertyCard = ({ property }) => {
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -13,7 +26,7 @@ const PropertyCard = ({ property }) => {
   return (
     <div className="property-card">
       <img 
-        src={property.imageUrl || 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400'} 
+        src={property.imageUrl || getDefaultImage(property.bedrooms)}
         alt={property.title}
         className="property-image"
       />

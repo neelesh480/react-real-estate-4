@@ -2,9 +2,12 @@ package com.marketplace.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.marketplace.model.Property;
+import com.marketplace.model.User;
 import com.marketplace.service.PropertyService;
+import com.marketplace.service.UserService;
 import java.util.List;
 
 @RestController
@@ -14,6 +17,9 @@ public class PropertyController {
 
     @Autowired
     private PropertyService propertyService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<Property>> getAllProperties() {
@@ -31,7 +37,9 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<Property> createProperty(@RequestBody Property property) {
+    public ResponseEntity<Property> createProperty(@RequestBody Property property, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+        property.setUser(user);
         Property savedProperty = propertyService.saveProperty(property);
         return ResponseEntity.ok(savedProperty);
     }
@@ -44,6 +52,7 @@ public class PropertyController {
         }
 
         property.setId(id);
+        property.setUser(existingProperty.getUser());
         Property updatedProperty = propertyService.saveProperty(property);
         return ResponseEntity.ok(updatedProperty);
     }
@@ -65,6 +74,12 @@ public class PropertyController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice) {
         List<Property> properties = propertyService.searchProperties(location, minPrice, maxPrice);
+        return ResponseEntity.ok(properties);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<Property>> getUserProperties(Authentication authentication) {
+        List<Property> properties = propertyService.getPropertiesByUser(authentication.getName());
         return ResponseEntity.ok(properties);
     }
 }

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { propertyAPI } from '../services/api';
-import api from '../services/api';
 import { indianLocations } from '../data/locations';
 
-const AddProperty = () => {
+const EditProperty = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [property, setProperty] = useState({
     title: '',
     description: '',
@@ -18,11 +20,21 @@ const AddProperty = () => {
     imageUrl: ''
   });
   const [loading, setLoading] = useState(false);
-  const [generatingAI, setGeneratingAI] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        const data = await propertyAPI.getProperty(id);
+        const [district, state] = data.location.split(', ');
+        setProperty({ ...data, state, district });
+      } catch (err) {
+        setError('Failed to load property data.');
+      }
+    };
+    fetchProperty();
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,13 +47,13 @@ const AddProperty = () => {
         ...property,
         location: `${property.district}, ${property.state}`
       };
-      await propertyAPI.createProperty(propertyData);
-      setSuccess('Property added successfully!');
+      await propertyAPI.updateProperty(id, propertyData);
+      setSuccess('Property updated successfully!');
       setTimeout(() => {
         navigate('/dashboard');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add property');
+      setError(err.response?.data?.message || 'Failed to update property');
     } finally {
       setLoading(false);
     }
@@ -58,43 +70,17 @@ const AddProperty = () => {
     });
   };
 
-  const handleGenerateDescription = async () => {
-    if (!property.title || !property.propertyType || !property.state || !property.district) {
-      setError('Please fill in Title, Type, State, and District first to generate a description.');
-      return;
-    }
-
-    setGeneratingAI(true);
-    setError('');
-
-    try {
-      const details = `${property.title} located in ${property.district}, ${property.state}. Type: ${property.propertyType}. ${property.bedrooms ? property.bedrooms + ' bedrooms.' : ''} ${property.bathrooms ? property.bathrooms + ' bathrooms.' : ''} ${property.area ? property.area + ' sq ft.' : ''}`;
-
-      const response = await api.post('/ai/generate-description', { details });
-
-      setProperty(prev => ({
-        ...prev,
-        description: response.data.description
-      }));
-    } catch (err) {
-      console.error(err);
-      setError('Failed to generate description. Please try again.');
-    } finally {
-      setGeneratingAI(false);
-    }
-  };
-
   return (
     <div className="container" style={{ paddingTop: '2rem' }}>
       <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <div className="card-header">
-          <h1>Add New Property</h1>
+          <h1>Edit Property</h1>
         </div>
-        
+
         <div className="card-body">
           {error && <div className="error">{error}</div>}
           {success && <div className="success">{success}</div>}
-          
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="form-label">Title</label>
@@ -105,33 +91,20 @@ const AddProperty = () => {
                 onChange={handleChange}
                 required
                 className="form-input"
-                placeholder="Beautiful 3BHK Flat"
               />
             </div>
-            
+
             <div className="form-group">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <label className="form-label" style={{ marginBottom: 0 }}>Description</label>
-                <button
-                  type="button"
-                  onClick={handleGenerateDescription}
-                  disabled={generatingAI}
-                  className="btn btn-outline"
-                  style={{ fontSize: '0.875rem', padding: '0.25rem 0.75rem' }}
-                >
-                  {generatingAI ? 'Generating...' : '✨ Generate with AI'}
-                </button>
-              </div>
+              <label className="form-label">Description</label>
               <textarea
                 name="description"
                 value={property.description}
                 onChange={handleChange}
                 className="form-input"
                 rows="4"
-                placeholder="Describe the property..."
               />
             </div>
-            
+
             <div className="form-group">
               <label className="form-label">State</label>
               <select name="state" value={property.state} onChange={handleChange} required className="form-input">
@@ -146,12 +119,12 @@ const AddProperty = () => {
               <label className="form-label">District</label>
               <select name="district" value={property.district} onChange={handleChange} required className="form-input" disabled={!property.state}>
                 <option value="">Select District</option>
-                {property.state && indianLocations[property.state].map(district => (
+                {property.state && indianLocations[property.state]?.map(district => (
                   <option key={district} value={district}>{district}</option>
                 ))}
               </select>
             </div>
-            
+
             <div className="form-group">
               <label className="form-label">Price (INR)</label>
               <input
@@ -161,10 +134,9 @@ const AddProperty = () => {
                 onChange={handleChange}
                 required
                 className="form-input"
-                placeholder="5000000"
               />
             </div>
-            
+
             <div className="form-group">
               <label className="form-label">Property Type</label>
               <select
@@ -182,7 +154,7 @@ const AddProperty = () => {
                 <option value="TOWNHOUSE">Townhouse</option>
               </select>
             </div>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
               <div className="form-group">
                 <label className="form-label">Bedrooms</label>
@@ -192,10 +164,9 @@ const AddProperty = () => {
                   value={property.bedrooms}
                   onChange={handleChange}
                   className="form-input"
-                  placeholder="3"
                 />
               </div>
-              
+
               <div className="form-group">
                 <label className="form-label">Bathrooms</label>
                 <input
@@ -204,10 +175,9 @@ const AddProperty = () => {
                   value={property.bathrooms}
                   onChange={handleChange}
                   className="form-input"
-                  placeholder="2"
                 />
               </div>
-              
+
               <div className="form-group">
                 <label className="form-label">Area (sq ft)</label>
                 <input
@@ -216,11 +186,10 @@ const AddProperty = () => {
                   value={property.area}
                   onChange={handleChange}
                   className="form-input"
-                  placeholder="1500"
                 />
               </div>
             </div>
-            
+
             <div className="form-group">
               <label className="form-label">Image URL (optional)</label>
               <input
@@ -229,17 +198,16 @@ const AddProperty = () => {
                 value={property.imageUrl}
                 onChange={handleChange}
                 className="form-input"
-                placeholder="https://example.com/image.jpg"
               />
             </div>
-            
-            <button 
-              type="submit" 
+
+            <button
+              type="submit"
               disabled={loading}
               className="btn btn-primary"
               style={{ width: '100%' }}
             >
-              {loading ? 'Adding Property...' : 'Add Property'}
+              {loading ? 'Updating Property...' : 'Update Property'}
             </button>
           </form>
         </div>
@@ -248,4 +216,4 @@ const AddProperty = () => {
   );
 };
 
-export default AddProperty;
+export default EditProperty;

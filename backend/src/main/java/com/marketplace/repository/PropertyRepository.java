@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface PropertyRepository extends JpaRepository<Property, Long> {
 
+    List<Property> findByUserEmail(String email);
+
     @Query("SELECT p FROM Property p WHERE " +
            "(:location IS NULL OR LOWER(p.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +

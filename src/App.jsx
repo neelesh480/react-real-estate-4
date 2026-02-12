@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AddProperty from './pages/AddProperty';
+import EditProperty from './pages/EditProperty';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -37,6 +38,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <AddProperty />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/edit-property/:id"
+                element={
+                  <ProtectedRoute>
+                    <EditProperty />
                   </ProtectedRoute>
                 } 
               />

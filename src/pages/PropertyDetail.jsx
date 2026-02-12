@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { propertyAPI } from '../services/api';
 
+const getDefaultImage = (bedrooms) => {
+  switch (String(bedrooms)) {
+    case '1':
+      return "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=800";
+    case '2':
+      return "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800";
+    case '3':
+      return "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=800";
+    default:
+      return "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800";
+  }
+};
+
 const PropertyDetail = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
@@ -24,9 +37,9 @@ const PropertyDetail = () => {
   }, [id]);
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -43,7 +56,7 @@ const PropertyDetail = () => {
       
       <div className="card">
         <img 
-          src={property.imageUrl || 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'} 
+          src={property.imageUrl || getDefaultImage(property.bedrooms)}
           alt={property.title}
           style={{ width: '100%', height: '400px', objectFit: 'cover' }}
         />
